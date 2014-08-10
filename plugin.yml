@@ -1,0 +1,13 @@
+name: BlockHunt
+main: io.github.colbyminer.blockhunt.BlockHunt
+version: 1.0
+authors:
+  - Colby_Miner
+description: BlockHunt is a hide'n'seek minigame.
+softdepend: [LibsDisguises, ProtocolLib, Vault]
+commands:
+  BlockHunt:
+    usage: /<command>
+    description: N/A
+    aliases:
+        - bh
