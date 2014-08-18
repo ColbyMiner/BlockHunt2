@@ -2,6 +2,7 @@ package io.github.colbyminer.blockhunt.gui;
 
 import io.github.colbyminer.blockhunt.ArenaConfig;
 import io.github.colbyminer.blockhunt.BlockHunt;
+
 import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
@@ -24,6 +25,7 @@ public class ConfigPanel extends Panel {
 		buttons.put(0, new PanelButton(Material.PAPER, "Arena: " + config.name));
 		buttons.put(1, new PanelButton(Material.SKULL_ITEM, 3, "Min Players", "minPlayers", 0, 64));
 		buttons.put(2, new PanelButton(Material.SKULL_ITEM, 3, "Max Players", "maxPlayers", 0, 64));
+		buttons.put(49, new PanelButton(Material.CHEST, 0, "Back to Settings", "back", 0, 0));
 	}
 	
 	/*
@@ -60,31 +62,46 @@ public class ConfigPanel extends Panel {
 			
 			PanelButton button = buttons.get(e.getRawSlot());
 			
-			int amount = this.config.getIntValue(button.configName);
-			
-			if (e.isLeftClick()) {
-				if (e.isShiftClick()) {
-					amount += 10;
-				} else {
-					amount++;
+			if (button.configName.equalsIgnoreCase("back")) {
+				// Run a delayed task to close out this panel and open up the arena config.
+				Bukkit.getScheduler().scheduleSyncDelayedTask(BlockHunt.plugin, new Runnable(){
+					@Override
+					public void run() {
+						e.getView().close();  // close out current inventory view
+
+						// Open up the arena config panel given the arena config object.
+						SettingsPanel panel = new SettingsPanel(BlockHunt.plugin);
+						panel.open((Player) e.getWhoClicked());
+					}
+
+				}, 0);
+				return;
+			} else {
+				int amount = this.config.getIntValue(button.configName);
+				
+				if (e.isLeftClick()) {
+					if (e.isShiftClick()) {
+						amount += 10;
+					} else {
+						amount++;
+					}
+				} else if (e.isRightClick()) {
+					if (e.isShiftClick()) {
+						amount -= 10;
+					} else {
+						amount--;
+					}
 				}
-			} else if (e.isRightClick()) {
-				if (e.isShiftClick()) {
-					amount -= 10;
-				} else {
-					amount--;
-				}
+				
+				// clamp amount to range.
+				amount = Math.max(button.min, amount);
+				amount = Math.min(button.max, amount);
+				
+				this.config.setIntValue(button.configName, amount);
+				
+				ItemStack item = e.getInventory().getItem(e.getRawSlot());
+				item.setAmount(amount);
 			}
-			
-			// clamp amount to range.
-			amount = Math.max(button.min, amount);
-			amount = Math.min(button.max, amount);
-			
-			this.config.setIntValue(button.configName, amount);
-			
-			ItemStack item = e.getInventory().getItem(e.getRawSlot());
-			item.setAmount(amount);
-			
 		}
 	}
 }

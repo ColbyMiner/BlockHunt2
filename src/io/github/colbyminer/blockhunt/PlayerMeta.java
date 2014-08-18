@@ -31,11 +31,11 @@ public class PlayerMeta {
 	}
 	
 	public static Location getRegionPoint1(Player p) {		
-		return (Location) p.getMetadata("hb.pt1").get(0);
+		return (Location) p.getMetadata("bh.pt1").get(0);
 	}
 	
 	public static Location getRegionPoint2(Player p) {		
-		return (Location) p.getMetadata("hb.pt2").get(0);
+		return (Location) p.getMetadata("bh.pt2").get(0);
 	}
 	
 	public static void removeRegionPoints(Player p) {
