@@ -90,8 +90,16 @@ public class Panel {
 	public Panel() { }
 	
 	/*
-	 * onInventoryClickEvent is called by PanelEventDispatcher.
-	 *     Method is implemented in the derived classes.
+	 * onInventoryClickEvent is called by PanelEventDispatcher.  The event is unique to this panel.
+	 *     Handles all click events on Arena Configuration Panel.
 	 */
-	public void onInventoryClickEvent(final InventoryClickEvent e) {}
+	public void onInventoryClickEvent(final InventoryClickEvent e) {
+		
+		// Does this slot contain a config button?
+		if (buttons.containsKey(e.getRawSlot())) {
+			PanelButton button = buttons.get(e.getRawSlot());
+			
+			button.onClick(e);
+		}		
+	}
 }

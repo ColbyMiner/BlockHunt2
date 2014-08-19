@@ -102,17 +102,4 @@ public class SettingsPanel extends Panel {
 		
 		p.openInventory(dialog);
 	}
-	
-	/*
-	 * Handle the inventory click event for this panel.
-	 */
-	public void onInventoryClickEvent(final InventoryClickEvent e) {
-		
-		// Does this slot contain a config button?
-		if (buttons.containsKey(e.getRawSlot())) {
-			PanelButton button = buttons.get(e.getRawSlot());
-			
-			button.onClick(e);
-		}		
-	}
 }
