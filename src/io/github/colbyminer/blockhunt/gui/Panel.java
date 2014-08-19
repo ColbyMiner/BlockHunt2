@@ -51,6 +51,7 @@ public class Panel {
 		public int max;
 		
 		public boolean isButton = true;
+		public boolean isTime = false;
 		
 		public PanelButton(Material m, String displayName) {
 			super(m, 0, displayName);
@@ -69,10 +70,21 @@ public class Panel {
 			this.min = minAmount;
 			this.max = maxAmount;
 		}
+		
+		public PanelButton(Material material, Integer materialData, String displayName, String configName, boolean isTime) {
+			super(material, materialData, displayName);
+			this.configName = configName;
+			this.isTime = isTime;
+			this.min = 0;
+			this.max = 0;
+		}
 	}
 	
 	public Panel() { }
 	
-	// Method is overridden by derived classes.
+	/*
+	 * onInventoryClickEvent is called by PanelEventDispatcher.
+	 *     Method is implemented in the derived classes.
+	 */
 	public void onInventoryClickEvent(final InventoryClickEvent e) {}
 }

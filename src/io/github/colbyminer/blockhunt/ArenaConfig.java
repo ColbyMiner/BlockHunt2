@@ -7,6 +7,9 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
+/*
+ * ArenaConfig manages the per-arena configuration.
+ */
 public class ArenaConfig {
 
 	JavaPlugin plugin = null;
@@ -29,6 +32,10 @@ public class ArenaConfig {
 	public static void setupDefaults(JavaPlugin plugin) {
 		plugin.getConfig().addDefault("arena-defaults.minPlayers", 2);
 		plugin.getConfig().addDefault("arena-defaults.maxPlayers", 12);
+		plugin.getConfig().addDefault("arena-defaults.gameTimeSecs", 300);
+		plugin.getConfig().addDefault("arena-defaults.seekerStartTimeSecs", 30);
+		plugin.getConfig().addDefault("arena-defaults.hidersSwordTimeSecs", 60);
+		plugin.getConfig().addDefault("arena-defaults.seekerRespawnTimeSecs",  10);
 		
 		plugin.saveDefaultConfig();
 		plugin.getConfig().options().copyDefaults(true);
@@ -71,19 +78,46 @@ public class ArenaConfig {
 		loadDefaults();
 	}
 	
+	/*
+	 * getIntValue returns the integer pointed to by config path.
+	 */
 	public int getIntValue(String key) {
 		return plugin.getConfig().getInt("arena." + this.name + "." + key);
 	}
 	
+	/*
+	 * getTimeValue builds a formatted string containing the time given seconds pointed to by config path.
+	 */
+	public String getTimeValue(String key) {
+		int totalSecs = plugin.getConfig().getInt(
+				"arena." + this.name + "." + key);
+
+		int hours = totalSecs / 3600;
+		int minutes = (totalSecs % 3600) / 60;
+		int seconds = totalSecs % 60;
+
+		String time = "";
+
+		if (hours > 0) {
+			time += (String.format("%d hour", hours) + ((hours > 1) ? "s " : " "));
+		}
+
+		if (minutes > 0) {
+			time += (String.format("%d min", minutes) + ((minutes > 1) ? "s " : " "));
+		}
+
+		if (seconds > 0) {
+			time += (String.format("%d sec", seconds) + ((seconds > 1) ? "s" : ""));
+		}
+
+		if (totalSecs == 0) {
+			time = "Not set";
+		}
+
+		return time;
+	}
+
 	public void setIntValue(String key, int value) {
 		plugin.getConfig().set("arena." + this.name + "." + key, value);
-	}
-	
-	public int getMinPlayers() {
-		return plugin.getConfig().getInt("arena." + this.name + ".minPlayers");
-	}
-	
-	public int getMaxPlayers() {
-		return plugin.getConfig().getInt("arena." + this.name + ".maxPlayers");
 	}
 }

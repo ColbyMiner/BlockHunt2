@@ -3,14 +3,18 @@ package io.github.colbyminer.blockhunt.gui;
 import io.github.colbyminer.blockhunt.ArenaConfig;
 import io.github.colbyminer.blockhunt.BlockHunt;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 /*
  * Configuration panel used for setting up the arena configuration.
@@ -25,6 +29,7 @@ public class ConfigPanel extends Panel {
 		buttons.put(0, new PanelButton(Material.PAPER, "Arena: " + config.name));
 		buttons.put(1, new PanelButton(Material.SKULL_ITEM, 3, "Min Players", "minPlayers", 0, 64));
 		buttons.put(2, new PanelButton(Material.SKULL_ITEM, 3, "Max Players", "maxPlayers", 0, 64));
+		buttons.put(5, new PanelButton(Material.COMPASS, 0, "Total Time", "gameTimeSecs", true));
 		buttons.put(49, new PanelButton(Material.CHEST, 0, "Back to Settings", "back", 0, 0));
 	}
 	
@@ -32,28 +37,53 @@ public class ConfigPanel extends Panel {
 	 * Opens a new configuration dialog for the specified player.
 	 */
 	public void open(Player p) {
-		
-        int length = Math.min(config.name.length(), 28);
+
+		int length = Math.min(config.name.length(), 28);
 		String title = "§6§l" + config.name.substring(0, length);
-		
-		Inventory dialog = Bukkit.createInventory(null, 54, title);
-		
+
+		Inventory panel = Bukkit.createInventory(null, 54, title);
+
 		for (Entry<Integer, PanelButton> entry : buttons.entrySet()) {
-		    Integer slot = entry.getKey();
-		    PanelButton button = entry.getValue();
-		    
-		    ItemStack item = button.getItemStack();
-		    int amount = this.config.getIntValue(button.configName);
-		    
-		    item.setAmount(amount);
-		    
-		    dialog.setItem(slot, item);
+			Integer slot = entry.getKey();
+			PanelButton button = entry.getValue();
+
+			ItemStack item = button.getItemStack();
+
+			if (button.isTime) {
+				String time = this.config.getTimeValue(button.configName);
+
+				ItemMeta meta = item.getItemMeta();
+
+				List<String> lore = new ArrayList<String>();
+				lore.add(ChatColor.translateAlternateColorCodes('&', "&7Time: &6" + time));
+
+				lore.add("");
+				lore.add(ChatColor.translateAlternateColorCodes('&', "&eClick to change time."));
+
+				meta.setLore(lore);
+				item.setItemMeta(meta);
+
+			} else {
+				int amount = this.config.getIntValue(button.configName);
+
+				item.setAmount(amount);
+
+				ItemMeta meta = item.getItemMeta();
+
+				item.setItemMeta(meta);
+			}
+
+			panel.setItem(slot, item);
 		}
-		
-		BlockHunt.plugin.openDialogs.put(dialog, this);
-		p.openInventory(dialog);
+
+		BlockHunt.plugin.openDialogs.put(panel, this);
+		p.openInventory(panel);
 	}
 	
+	/*
+	 * onInventoryClickEvent is called by PanelEventDispatcher.  The event is unique to this panel.
+	 *     Handles all click events on Arena Configuration Panel.
+	 */
 	public void onInventoryClickEvent(final InventoryClickEvent e) {
 		// Does this slot contain a config button?
 		if (buttons.containsKey(e.getRawSlot())) {
@@ -62,7 +92,22 @@ public class ConfigPanel extends Panel {
 			
 			PanelButton button = buttons.get(e.getRawSlot());
 			
-			if (button.configName.equalsIgnoreCase("back")) {
+			if (button.isTime) {
+				// Run a delayed task to close out this panel and open up the arena config.
+				Bukkit.getScheduler().scheduleSyncDelayedTask(BlockHunt.plugin, new Runnable(){
+					@Override
+					public void run() {
+						PanelButton button = buttons.get(e.getRawSlot());
+						e.getView().close();  // close out current inventory view
+
+						// Open up the arena config panel given the arena config object.
+						TimePanel panel = new TimePanel(button.displayName, button.configName);
+						panel.open((Player) e.getWhoClicked());
+					}
+
+				}, 0);
+				return;			
+			} else if (button.configName.equalsIgnoreCase("back")) {
 				// Run a delayed task to close out this panel and open up the arena config.
 				Bukkit.getScheduler().scheduleSyncDelayedTask(BlockHunt.plugin, new Runnable(){
 					@Override
