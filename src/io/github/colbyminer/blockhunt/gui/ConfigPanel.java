@@ -50,8 +50,9 @@ public class ConfigPanel extends Panel {
 		public void onClick(final InventoryClickEvent e) {			
 			e.setCancelled(true);
 			
+			final ArenaConfig config = this.config;
 			final String name = this.displayName;
-			final String config = this.configName;
+			final String path = this.configName;
 			
 			// Run a delayed task to close out this panel and open up the arena config.
 			Bukkit.getScheduler().scheduleSyncDelayedTask(BlockHunt.plugin, new Runnable(){
@@ -60,7 +61,7 @@ public class ConfigPanel extends Panel {
 					e.getView().close();  // close out current inventory view
 
 					// Open up the arena config panel given the arena config object.
-					TimePanel panel = new TimePanel(name, config);
+					TimePanel panel = new TimePanel(config, name, path);
 					panel.open((Player) e.getWhoClicked());
 				}
 
@@ -173,6 +174,7 @@ public class ConfigPanel extends Panel {
 		for (Entry<Integer, PanelButton> entry : buttons.entrySet()) {
 			Integer slot = entry.getKey();
 			PanelButton button = entry.getValue();
+			button.onUpdate();
 			panel.setItem(slot, button.getItemStack());
 		}
 

@@ -69,8 +69,9 @@ public class Panel {
 			this.configName = configName;
 		}
 		
-		public void onClick(final InventoryClickEvent e) {
-		}
+		public void onClick(final InventoryClickEvent e) {}
+		
+		public void onUpdate() {}
 	}
 	
 	public Panel() { }

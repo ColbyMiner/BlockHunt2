@@ -119,5 +119,7 @@ public class ArenaConfig {
 
 	public void setIntValue(String key, int value) {
 		plugin.getConfig().set("arena." + this.name + "." + key, value);
+		
+		plugin.saveConfig();
 	}
 }

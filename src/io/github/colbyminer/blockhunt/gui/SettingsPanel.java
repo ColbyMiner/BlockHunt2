@@ -93,6 +93,8 @@ public class SettingsPanel extends Panel {
 		for (Entry<Integer, PanelButton> entry : buttons.entrySet()) {
 		    Integer slot = entry.getKey();
 		    PanelButton button = entry.getValue();
+		    
+		    button.onUpdate();
 
 		    ItemStack item = button.getItemStack();
 		    panel.setItem(slot, item);
