@@ -51,8 +51,6 @@ public class Panel {
 	public class PanelButton extends PanelIcon {
 		
 		public String configName;
-		public int min;
-		public int max;
 		
 		public boolean isButton = true;
 		public boolean isTime = false;
@@ -61,26 +59,14 @@ public class Panel {
 			super(m, 0, displayName);
 		}
 		
-		public PanelButton(Material material, String displayName, String configName, int minAmount, int maxAmount) {
+		public PanelButton(Material material, String displayName, String configName) {
 			super(material, 0, displayName);
 			this.configName = configName;
-			this.min = minAmount;
-			this.max = maxAmount;
 		}
 		
-		public PanelButton(Material material, Integer materialData, String displayName, String configName, int minAmount, int maxAmount) {
+		public PanelButton(Material material, Integer materialData, String displayName, String configName) {
 			super(material, materialData, displayName);
 			this.configName = configName;
-			this.min = minAmount;
-			this.max = maxAmount;
-		}
-		
-		public PanelButton(Material material, Integer materialData, String displayName, String configName, boolean isTime) {
-			super(material, materialData, displayName);
-			this.configName = configName;
-			this.isTime = isTime;
-			this.min = 0;
-			this.max = 0;
 		}
 		
 		public void onClick(final InventoryClickEvent e) {

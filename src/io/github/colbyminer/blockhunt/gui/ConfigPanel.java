@@ -30,7 +30,8 @@ public class ConfigPanel extends Panel {
 	public class TimeButton extends PanelButton {
 		
 		TimeButton(String displayName, String configName) {
-			super(Material.COMPASS, 0, displayName, configName, true);
+			super(Material.COMPASS, 0, displayName, configName);
+			this.isTime = true;
 		}
 		
 		public void onClick(final InventoryClickEvent e) {			
@@ -60,10 +61,14 @@ public class ConfigPanel extends Panel {
 	public class AmountButton extends PanelButton {
 		
 		ArenaConfig config = null;
+		int min;
+		int max;
 		
 		AmountButton(ArenaConfig c, Material m, int materialData, String displayName, String configName, int min, int max) {
-			super(m, materialData, displayName, configName, min, max);
+			super(m, materialData, displayName, configName);
 			this.config = c;
+			this.min = min;
+			this.max = max;
 		}
 		
 		public void onClick(final InventoryClickEvent e) {
@@ -103,7 +108,7 @@ public class ConfigPanel extends Panel {
 	public class BackButton extends PanelButton {
 		
 		BackButton() {
-			super(Material.CHEST, 0, "Back to Settings", "back", 0, 0);
+			super(Material.CHEST, 0, "Back to Settings", "back");
 		}
 		
 		public void onClick(final InventoryClickEvent e) {

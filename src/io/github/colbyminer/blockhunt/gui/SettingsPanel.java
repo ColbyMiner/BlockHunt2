@@ -25,7 +25,7 @@ public class SettingsPanel extends Panel {
 	public class ArenaButton extends PanelButton {
 		
 		ArenaButton(String arenaName) {
-			super(Material.CHEST, 0, arenaName, arenaName, 0, 0);
+			super(Material.CHEST, 0, arenaName, arenaName);
 		}
 		
 		public void onClick(final InventoryClickEvent e) {			
