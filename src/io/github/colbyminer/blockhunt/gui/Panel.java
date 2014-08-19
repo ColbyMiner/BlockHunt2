@@ -22,6 +22,7 @@ public class Panel {
 		public Material material;      // ItemStack material for dialog button.
 		public Integer  materialData;  // Datavalue for material. TODO This is deprecated feature.
 		public String   displayName;   // Display name for button.
+		public ItemStack item = null;
 		
 		List<String> lore = new ArrayList<String>();
 		
@@ -33,15 +34,17 @@ public class Panel {
 		
 		public ItemStack getItemStack() {
 			
-			ItemStack item = new ItemStack(this.material, 1, (byte)this.materialData.intValue());
-			ItemMeta meta = Bukkit.getItemFactory().getItemMeta(this.material);
-			
-			if (meta != null) {
-				meta.setDisplayName(this.displayName);
-				item.setItemMeta(meta);
+			if (this.item == null) {
+				this.item = new ItemStack(this.material, 1, (byte)this.materialData.intValue());
+				ItemMeta meta = Bukkit.getItemFactory().getItemMeta(this.material);
+				
+				if (meta != null) {
+					meta.setDisplayName(this.displayName);
+					this.item.setItemMeta(meta);
+				}
 			}
 
-            return item;
+			return this.item;
 		}
 	}
 	

@@ -29,9 +29,23 @@ public class ConfigPanel extends Panel {
 	 */
 	public class TimeButton extends PanelButton {
 		
-		TimeButton(String displayName, String configName) {
+		ArenaConfig config = null;
+		
+		TimeButton(ArenaConfig config, String displayName, String configName) {
 			super(Material.COMPASS, 0, displayName, configName);
+			this.config = config;
 			this.isTime = true;
+			
+			ItemStack item = getItemStack();
+			String time = this.config.getTimeValue(configName);
+			ItemMeta meta = item.getItemMeta();
+
+			List<String> lore = new ArrayList<String>();
+			lore.add(ChatColor.translateAlternateColorCodes('&', "&7Time: &6" + time));
+			lore.add("");
+			lore.add(ChatColor.translateAlternateColorCodes('&', "&eClick to change time."));
+			meta.setLore(lore);
+			item.setItemMeta(meta);
 		}
 		
 		public void onClick(final InventoryClickEvent e) {			
@@ -69,6 +83,12 @@ public class ConfigPanel extends Panel {
 			this.config = c;
 			this.min = min;
 			this.max = max;
+			
+			ItemStack item = getItemStack();
+			int amount = this.config.getIntValue(this.configName);
+			item.setAmount(amount);
+			ItemMeta meta = item.getItemMeta();
+			item.setItemMeta(meta);
 		}
 		
 		public void onClick(final InventoryClickEvent e) {
@@ -137,7 +157,7 @@ public class ConfigPanel extends Panel {
 		buttons.put(0, new PanelButton(Material.PAPER, "Arena: " + config.name));
 		buttons.put(1, new AmountButton(config, Material.SKULL_ITEM, 3, "Min Players", "minPlayers", 0, 64));
 		buttons.put(2, new AmountButton(config, Material.SKULL_ITEM, 3, "Max Players", "maxPlayers", 0, 64));
-		buttons.put(5, new TimeButton("Total Time", "gameTimeSecs"));
+		buttons.put(5, new TimeButton(config, "Total Time", "gameTimeSecs"));
 		buttons.put(49, new BackButton());
 	}
 	
@@ -154,34 +174,7 @@ public class ConfigPanel extends Panel {
 		for (Entry<Integer, PanelButton> entry : buttons.entrySet()) {
 			Integer slot = entry.getKey();
 			PanelButton button = entry.getValue();
-
-			ItemStack item = button.getItemStack();
-
-			if (button.isTime) {
-				String time = this.config.getTimeValue(button.configName);
-
-				ItemMeta meta = item.getItemMeta();
-
-				List<String> lore = new ArrayList<String>();
-				lore.add(ChatColor.translateAlternateColorCodes('&', "&7Time: &6" + time));
-
-				lore.add("");
-				lore.add(ChatColor.translateAlternateColorCodes('&', "&eClick to change time."));
-
-				meta.setLore(lore);
-				item.setItemMeta(meta);
-
-			} else {
-				int amount = this.config.getIntValue(button.configName);
-
-				item.setAmount(amount);
-
-				ItemMeta meta = item.getItemMeta();
-
-				item.setItemMeta(meta);
-			}
-
-			panel.setItem(slot, item);
+			panel.setItem(slot, button.getItemStack());
 		}
 
 		BlockHunt.plugin.openDialogs.put(panel, this);

@@ -26,6 +26,22 @@ public class SettingsPanel extends Panel {
 		
 		ArenaButton(String arenaName) {
 			super(Material.CHEST, 0, arenaName, arenaName);
+			
+		    BlockHuntArena arena = plugin.arenas.get(arenaName);
+		    ArenaConfig config = arena.config;
+		    
+		    ItemStack item = getItemStack();
+			ItemMeta  meta = item.getItemMeta();
+			
+			List<String> lore = new ArrayList<String>();
+			lore.add(ChatColor.translateAlternateColorCodes('&', "&7Arena: &6" + config.name));
+			lore.add(ChatColor.translateAlternateColorCodes('&', "&7Min Players: &6" + config.getIntValue("minPlayers")));
+			lore.add(ChatColor.translateAlternateColorCodes('&', "&7Max Players: &6" + config.getIntValue("maxPlayers")));
+			lore.add("");
+			lore.add(ChatColor.translateAlternateColorCodes('&', "&eClick for arena config"));
+			
+			meta.setLore(lore);
+			item.setItemMeta(meta);
 		}
 		
 		public void onClick(final InventoryClickEvent e) {			
@@ -72,34 +88,18 @@ public class SettingsPanel extends Panel {
 
 		String title = "§7§lBlockHunt Settings";
 		
-		Inventory dialog = Bukkit.createInventory(null, 54, title);
+		Inventory panel = Bukkit.createInventory(null, 54, title);
 		
 		for (Entry<Integer, PanelButton> entry : buttons.entrySet()) {
 		    Integer slot = entry.getKey();
 		    PanelButton button = entry.getValue();
-		    
-		    BlockHuntArena arena = plugin.arenas.get(button.configName);
-		    ArenaConfig config = arena.config;
-		    
+
 		    ItemStack item = button.getItemStack();
-		    
-			ItemMeta  meta = item.getItemMeta();
-			
-			List<String> lore = new ArrayList<String>();
-			lore.add(ChatColor.translateAlternateColorCodes('&', "&7Arena: &6" + config.name));
-			lore.add(ChatColor.translateAlternateColorCodes('&', "&7Min Players: &6" + config.getIntValue("minPlayers")));
-			lore.add(ChatColor.translateAlternateColorCodes('&', "&7Max Players: &6" + config.getIntValue("maxPlayers")));
-			lore.add("");
-			lore.add(ChatColor.translateAlternateColorCodes('&', "&eClick for arena config"));
-			
-			meta.setLore(lore);
-			item.setItemMeta(meta);
-		    
-		    dialog.setItem(slot, item);
+		    panel.setItem(slot, item);
 		}
 		
-		BlockHunt.plugin.openDialogs.put(dialog, this);
+		BlockHunt.plugin.openDialogs.put(panel, this);
 		
-		p.openInventory(dialog);
+		p.openInventory(panel);
 	}
 }
