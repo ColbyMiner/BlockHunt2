@@ -34,7 +34,6 @@ public class ConfigPanel extends Panel {
 		TimeButton(ArenaConfig config, String displayName, String configName) {
 			super(Material.COMPASS, 0, displayName, configName);
 			this.config = config;
-			this.isTime = true;
 			
 			ItemStack item = getItemStack();
 			String time = this.config.getTimeValue(configName);

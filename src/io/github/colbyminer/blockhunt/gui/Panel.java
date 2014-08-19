@@ -55,9 +55,6 @@ public class Panel {
 		
 		public String configName;
 		
-		public boolean isButton = true;
-		public boolean isTime = false;
-		
 		public PanelButton(Material m, String displayName) {
 			super(m, 0, displayName);
 		}
