@@ -22,6 +22,35 @@ public class SettingsPanel extends Panel {
 	
 	BlockHunt plugin = null;
 	
+	public class ArenaButton extends PanelButton {
+		
+		ArenaButton(String arenaName) {
+			super(Material.CHEST, 0, arenaName, arenaName, 0, 0);
+		}
+		
+		public void onClick(final InventoryClickEvent e) {			
+			e.setCancelled(true);
+			
+			final String arenaName = this.configName;
+			
+			// Run a delayed task to close out this panel and open up the arena config.
+			Bukkit.getScheduler().scheduleSyncDelayedTask(BlockHunt.plugin, new Runnable(){
+				@Override
+				public void run() {
+					e.getView().close();  // close out current inventory view
+					
+					// Get the arena using button's configName which has the arena name.
+					Arena a = BlockHunt.plugin.arenas.get(arenaName);
+					
+					// Open up the arena config panel given the arena config object.
+					ConfigPanel panel = new ConfigPanel(a.config);
+					panel.open((Player) e.getWhoClicked());
+				}
+
+			}, 0);
+		}
+	}
+	
 	/*
 	 * Setup buttons for settings panel. Create a chest button for each arena.
 	 */
@@ -29,9 +58,9 @@ public class SettingsPanel extends Panel {
 		this.plugin = plugin;
 
 		int slot = 0;
+		
 		for (Entry<String, BlockHuntArena> entry : plugin.arenas.entrySet()) {
-		    String arenaName = entry.getKey();		    
-		    buttons.put(slot, new PanelButton(Material.CHEST, 0, arenaName, arenaName, 0, 64));
+			buttons.put(slot,  new ArenaButton(entry.getKey()));
 		    slot++;
 		}
 	}
@@ -81,27 +110,9 @@ public class SettingsPanel extends Panel {
 		
 		// Does this slot contain a config button?
 		if (buttons.containsKey(e.getRawSlot())) {
-
-			e.setCancelled(true);
+			PanelButton button = buttons.get(e.getRawSlot());
 			
-			// Run a delayed task to close out this panel and open up the arena config.
-			Bukkit.getScheduler().scheduleSyncDelayedTask(BlockHunt.plugin, new Runnable(){
-				@Override
-				public void run() {
-					e.getView().close();  // close out current inventory view
-					
-					// Get button for this slot.
-					PanelButton button = buttons.get(e.getRawSlot());
-					
-					// Get the arena using button's configName which has the arena name.
-					Arena a = BlockHunt.plugin.arenas.get(button.configName);
-					
-					// Open up the arena config panel given the arena config object.
-					ConfigPanel panel = new ConfigPanel(a.config);
-					panel.open((Player) e.getWhoClicked());
-				}
-
-			}, 0);
+			button.onClick(e);
 		}		
 	}
 }

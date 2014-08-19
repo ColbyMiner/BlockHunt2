@@ -1,6 +1,8 @@
 package io.github.colbyminer.blockhunt.gui;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
@@ -20,6 +22,8 @@ public class Panel {
 		public Material material;      // ItemStack material for dialog button.
 		public Integer  materialData;  // Datavalue for material. TODO This is deprecated feature.
 		public String   displayName;   // Display name for button.
+		
+		List<String> lore = new ArrayList<String>();
 		
 		public PanelIcon(Material material, Integer materialData, String displayName) {
 			this.material = material;
@@ -77,6 +81,9 @@ public class Panel {
 			this.isTime = isTime;
 			this.min = 0;
 			this.max = 0;
+		}
+		
+		public void onClick(final InventoryClickEvent e) {
 		}
 	}
 	
